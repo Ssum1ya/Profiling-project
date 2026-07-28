@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="project-profile"/>
+
+    <appender name="CONSOLE_PLAIN" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] [traceId=%X{traceId}] [uri=%X{uri}] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE_JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/var/log/app/app.json.log</file>
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <fieldNames>
+                <version>[ignore]</version>
+                <levelValue>[ignore]</levelValue>
+                <thread>[ignore]</thread>
+            </fieldNames>
+            <includeMdcKeyName>uri</includeMdcKeyName>
+            <includeMdcKeyName>traceId</includeMdcKeyName>
+            <timestampPattern>yyyy-MM-dd HH:mm:ss</timestampPattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>/var/log/app/app.json.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+
+        <immediateFlush>false</immediateFlush>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE_PLAIN"/>
+        <appender-ref ref="FILE_JSON"/>
+    </root>
+
+    <logger name="org.springframework.web" level="INFO"/>
+
+</configuration>

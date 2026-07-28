@@ -1,4 +1,4 @@
-package app.project_profile.infrastructure;
+package app.project_profile.infrastructure.external;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ public class EchoHttpClientConfig {
     @Bean
     RestClient echoRestClient(RestClient.Builder builder) {
         return builder
-                .baseUrl("http://localhost:8081")
+                .baseUrl("http://mock-external-system:80")
                 .build();
     }
 

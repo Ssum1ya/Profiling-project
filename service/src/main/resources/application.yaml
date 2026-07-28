@@ -1,40 +1,29 @@
 spring:
   application:
-    name: project_profile
+    name: service
 
   data:
     redis:
-      host: localhost
+      host: redis
       port: 6379
       password: semechko
 
 management:
-  info:
-    env:
-      enabled: true
-
-  endpoint:
-    health:
-      show-details: always
-
   metrics:
-    export:
-      prometheus:
-        enabled: true
     distribution:
-      percentiles-histogram:
-        "{http.server.requests}": true
-
+      percentiles:
+        external.echo.request.time: 0.0
+        http.server.requests: 0.0
   endpoints:
     web:
       exposure:
-        include: health, prometheus, metrics, info
+        include: prometheus
 
-info:
-  app:
-    name: service
-    version: 0.0.1
-    description: test service for profile
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] [uri=%X{uri}] - %msg%n"
+
+pathToJson: ./src/main/resources/schemas/
 
 server:
   port: 8080

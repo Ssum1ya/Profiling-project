@@ -1,0 +1,1 @@
+java -javaagent:C:\Users\Proger\Desktop\compass_plus\project_profile\timing-agent\build\libs\timing-agent-1.0-SNAPSHOT.jar=app.project_profile,app.project_profile.api. -jar C:\Users\Proger\Desktop\compass_plus\project_profile\service\build\libs\service-0.0.1-SNAPSHOT.jar

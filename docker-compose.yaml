@@ -1,4 +1,76 @@
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "9911:9911"
+    volumes:
+      - app-logs:/var/log/app
+      - ./service/src/main/resources/schemas:/app/schemas
+    environment:
+      - SCANNING_PACKAGES=app.project_profile,app.project_profile.api.,app.project_profile.application.
+      - PATHTOJSON=/app/schemas/
+    depends_on:
+      - logstash
+
+  filebeat:
+    build:
+      context: .
+      dockerfile: Dockerfile.filebeat
+    user: root
+    volumes:
+      - app-logs:/var/log/app:ro
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - filebeat-data:/usr/share/filebeat/data
+    depends_on:
+      - logstash
+    command: [ "--strict.perms=false" ]
+    networks:
+      - test-net
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.3
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - test-net
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.17.3
+    container_name: logstash
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5044:5044"
+    environment:
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    command:
+    networks:
+      - test-net
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.17.3
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - test-net
+
   redis:
     image: redis:7-alpine
     restart: unless-stopped
@@ -42,13 +114,16 @@ services:
           - prometheus
 
   mock-external-system:
-    build: .
+    build: ./nginx
     ports:
       - "8081:80"
     restart: unless-stopped
 
 volumes:
+  app-logs:
+  filebeat-data:
   project_profile_redis_data:
+  elasticsearch-data:
 
 networks:
   monitoring:

@@ -18,6 +18,12 @@ repositories {
 }
 
 dependencies {
+	// json-validator
+	implementation("com.networknt:json-schema-validator:1.5.1")
+
+	// Logstash
+	implementation("net.logstash.logback:logstash-logback-encoder:8.0")
+
 	// Redis
 	implementation("org.springframework.boot:spring-boot-starter-data-redis:4.0.5")
 
@@ -32,6 +38,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	testImplementation("org.springframework.boot:spring-boot-starter-thymeleaf-test")
 
+	// Jackson
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
 
 	// Lombok
@@ -51,6 +58,14 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+configurations.all {
+	resolutionStrategy {
+		force("com.fasterxml.jackson.core:jackson-databind:2.17.2")
+		force("com.fasterxml.jackson.core:jackson-core:2.17.2")
+		force("com.fasterxml.jackson.core:jackson-annotations:2.17.2")
+	}
 }
 
 tasks.withType<Test> {

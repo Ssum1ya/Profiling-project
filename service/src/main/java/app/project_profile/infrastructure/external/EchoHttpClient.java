@@ -1,6 +1,5 @@
-package app.project_profile.infrastructure;
+package app.project_profile.infrastructure.external;
 
-import app.project_profile.api.dto.MessageXmlDto;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
@@ -9,5 +8,5 @@ import org.springframework.web.service.annotation.PostExchange;
 public interface EchoHttpClient {
 
     @PostExchange()
-    MessageXmlDto echoRequest(@RequestBody MessageXmlDto request);
+    String echoRequest(@RequestBody String request);
 }
