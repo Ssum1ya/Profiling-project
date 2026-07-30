@@ -23,7 +23,7 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] [uri=%X{uri}] - %msg%n"
 
-pathToJson: ./src/main/resources/schemas/
+mockExternalSystemUrl: http://echo-service:80
 
 server:
   port: 8080
