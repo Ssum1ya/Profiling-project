@@ -28,7 +28,7 @@ export const options = {
 };
 
 export function sendRequests() {
-  const res = http.post('http://localhost:8080/api/process', JSON.stringify({ message: 'Hello world' }), {
+  const res = http.post('http://profile.local/api/process', JSON.stringify({ message: 'Hello world' }), {
       headers: { 'Content-Type': 'application/json' },
       tags: { variant: 'mvc-http' },
   });
@@ -43,7 +43,7 @@ export function sendRequests() {
 
   const uuid = res.json('uuid');
 
-  const getRes = http.get(`http://localhost:8080/api/process/${uuid}`, {
+  const getRes = http.get(`http://profile.local/api/process/${uuid}`, {
       tags: { variant: 'mvc-http-get' },
   });
 

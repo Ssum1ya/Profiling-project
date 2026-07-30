@@ -1,5 +1,6 @@
 package app.project_profile.infrastructure.external;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
@@ -8,6 +9,10 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
 public class EchoHttpClientConfig {
+
+    @Value("${mockExternalSystemUrl}")
+    private String mockExternalSystemUrl;
+
     @Bean
     RestClient.Builder restClientBuilder() {
         return RestClient.builder();
@@ -16,7 +21,7 @@ public class EchoHttpClientConfig {
     @Bean
     RestClient echoRestClient(RestClient.Builder builder) {
         return builder
-                .baseUrl("http://mock-external-system:80")
+                .baseUrl(mockExternalSystemUrl)
                 .build();
     }
 

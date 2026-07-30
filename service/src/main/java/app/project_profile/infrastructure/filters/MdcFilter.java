@@ -23,9 +23,11 @@ public class MdcFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         String traceId = UUID.randomUUID().toString();
+        String podName = System.getenv("POD_NAME");
+        String endpoint = request.getRequestURI();
 
         MDC.put("traceId", traceId);
-        MDC.put("uri", request.getRequestURI());
+        MDC.put("uri", podName + " -> " + endpoint);
 
         try {
             filterChain.doFilter(request, response);

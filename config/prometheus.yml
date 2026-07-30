@@ -1,12 +1,45 @@
 scrape_configs:
-  - job_name: 'sample_monitoring'
-    scrape_interval: 5s
-    metrics_path: '/api/actuator/prometheus'
-    static_configs:
-      - targets: ['app:8080']
+  - job_name: profile-service
 
-  - job_name: 'timing-agent-metrics'
-    scrape_interval: 5s
-    metrics_path: '/metrics'
-    static_configs:
-      - targets: ['app:9911']
+    kubernetes_sd_configs:
+      - role: endpoints
+
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_service_name]
+        regex: profile-monitoring
+        action: keep
+
+      - source_labels: [__meta_kubernetes_namespace]
+        regex: default
+        action: keep
+
+    metrics_path: /api/actuator/prometheus
+
+  - job_name: timing-agent
+
+    kubernetes_sd_configs:
+      - role: endpoints
+
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_service_name]
+        regex: profile-monitoring
+        action: keep
+
+      - source_labels: [__meta_kubernetes_namespace]
+        regex: default
+        action: keep
+
+    metrics_path: /metrics
+
+#scrape_configs:
+#  - job_name: 'sample_monitoring'
+#    scrape_interval: 5s
+#    metrics_path: '/api/actuator/prometheus'
+#    static_configs:
+#      - targets: ['app:8080']
+#
+#  - job_name: 'timing-agent-metrics'
+#    scrape_interval: 5s
+#    metrics_path: '/metrics'
+#    static_configs:
+#      - targets: ['app:9911']

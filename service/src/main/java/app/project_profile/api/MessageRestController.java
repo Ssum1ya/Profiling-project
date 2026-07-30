@@ -1,10 +1,8 @@
 package app.project_profile.api;
 
 import app.project_profile.application.MessageService;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -24,17 +22,14 @@ public class MessageRestController {
 
     @PostMapping("/process")
     public ResponseEntity<?> process(
-            @RequestBody String rawRequestBody,
-            HttpServletRequest request
+            @RequestBody String rawRequestBody
     ) throws IOException {
         ObjectNode requestNode = (ObjectNode) objectMapper.readTree(rawRequestBody);
         String jsonRequest = objectMapper.writerWithDefaultPrettyPrinter()
                 .writeValueAsString(requestNode);
         log.info("Received process request = {}", jsonRequest);
 
-        String fullUrl = request.getRequestURL().toString();
-
-        ObjectNode responseNode = messageService.process(requestNode, fullUrl);
+        ObjectNode responseNode = messageService.process(requestNode);
         String jsonResponse = objectMapper.writerWithDefaultPrettyPrinter()
                 .writeValueAsString(responseNode);
 
