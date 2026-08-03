@@ -3,13 +3,13 @@ filebeat.inputs:
     enabled: true
     paths:
       - /var/log/app/*.json.log
-    json.keys_under_root: true
-    json.add_error_key: true
+    json.keys_under_root: true # поля будут доступны напрямую
+    json.add_error_key: true # если строка окажется некорректным JSON, то отбрасываем
     json.message_key: message
 
-    exclude_files: ['\.gz$']
-    close_inactive: 30m
-    scan_frequency: 5s
+    exclude_files: ['\.gz$'] # не читаем архивированные файлы
+    close_inactive: 30m # если файл не изменялся 30 минут, то filebeat закрывает его
+    scan_frequency: 5s # каждые 5 секунд проверяем директорию /var/log/app на изменения
 
 output.logstash:
   hosts: ["logstash:5044"]
