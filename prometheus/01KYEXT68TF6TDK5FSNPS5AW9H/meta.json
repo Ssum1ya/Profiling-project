@@ -1,0 +1,31 @@
+{
+	"ulid": "01KYEXT68TF6TDK5FSNPS5AW9H",
+	"minTime": 1784967454074,
+	"maxTime": 1784980800000,
+	"stats": {
+		"numSamples": 207562,
+		"numFloatSamples": 207562,
+		"numSeries": 142,
+		"numChunks": 1698
+	},
+	"compaction": {
+		"level": 2,
+		"sources": [
+			"01KYCFXER40RX1T4542229VK0S",
+			"01KYCNS48J420TKDZE0MS11YXV"
+		],
+		"parents": [
+			{
+				"ulid": "01KYCFXER40RX1T4542229VK0S",
+				"minTime": 1784967454074,
+				"maxTime": 1784973600000
+			},
+			{
+				"ulid": "01KYCNS48J420TKDZE0MS11YXV",
+				"minTime": 1784973603909,
+				"maxTime": 1784980800000
+			}
+		]
+	},
+	"version": 1
+}
