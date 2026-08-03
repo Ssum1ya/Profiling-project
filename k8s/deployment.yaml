@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: profile-service
-          image: test2:latest
+          image: test3:latest
           imagePullPolicy: Never
 
           resources:

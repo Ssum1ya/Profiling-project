@@ -33,32 +33,32 @@
 <!--        <immediateFlush>false</immediateFlush>-->
 <!--    </appender>-->
 
-    <appender name="LOGSTASH_TCP" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>logstash:5044</destination>
+<!--    <appender name="LOGSTASH_TCP" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+<!--        <destination>logstash:5044</destination>-->
 
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <fieldNames>
-                <version>[ignore]</version>
-                <levelValue>[ignore]</levelValue>
-                <thread>[ignore]</thread>
-            </fieldNames>
+<!--        <encoder class="net.logstash.logback.encoder.LogstashEncoder">-->
+<!--            <fieldNames>-->
+<!--                <version>[ignore]</version>-->
+<!--                <levelValue>[ignore]</levelValue>-->
+<!--                <thread>[ignore]</thread>-->
+<!--            </fieldNames>-->
 
-            <includeMdcKeyName>uri</includeMdcKeyName>
-            <includeMdcKeyName>traceId</includeMdcKeyName>
+<!--            <includeMdcKeyName>uri</includeMdcKeyName>-->
+<!--            <includeMdcKeyName>traceId</includeMdcKeyName>-->
 
-            <timestampPattern>yyyy-MM-dd HH:mm:ss</timestampPattern>
-        </encoder>
+<!--            <timestampPattern>yyyy-MM-dd HH:mm:ss</timestampPattern>-->
+<!--        </encoder>-->
 
-        <keepAliveDuration>5 minutes</keepAliveDuration>
+<!--        <keepAliveDuration>5 minutes</keepAliveDuration>-->
 
-        <ringBufferSize>8192</ringBufferSize>
+<!--        <ringBufferSize>8192</ringBufferSize>-->
 
-        <writeBufferSize>8192</writeBufferSize>
-    </appender>
+<!--        <writeBufferSize>8192</writeBufferSize>-->
+<!--    </appender>-->
 
     <root level="INFO">
         <appender-ref ref="CONSOLE_PLAIN"/>
-        <appender-ref ref="LOGSTASH_TCP"/>
+<!--        <appender-ref ref="LOGSTASH_TCP"/>-->
 <!--        <appender-ref ref="FILE_JSON"/>-->
     </root>
 
