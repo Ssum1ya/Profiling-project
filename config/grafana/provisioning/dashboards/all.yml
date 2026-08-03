@@ -4,8 +4,8 @@ providers:
   - name: 'default'
     folder: 'default'
     type: file
-    allowUiUpdates: true
-    updateIntervalSeconds: 30
+    allowUiUpdates: true # разрешаем редактировать дашборды в Grafana
+    updateIntervalSeconds: 30 # каждые 30 секунд будем подтягивать изменения в папке dashboards
     options:
-      path: /etc/grafana/provisioning/dashboards
+      path: /etc/grafana/provisioning/dashboards # путь до директории в Docker контейнере
       foldersFromFilesStructure: true

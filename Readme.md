@@ -10,10 +10,10 @@
 - Деплой инфраструктуры в Kubernetes
 # Информация о client и echo service
 Client может выступать любым (браузер, другой сервис), например я пользовался postman для отправки запросов. 
-Echo service отвечает сервису тем же XML что отправляет Service. Он примитивный, но на его место может встать TranzAxis.
+Echo service отвечает сервису тем же XML что отправляет Service + кастомные поля (смотри подробнее в файле `/nginx/echo.js`). Он примитивный, но на его место может встать TranzAxis.
 ## Service endpoints:
 ### POST /process
-Клиент отправляет JSON (любой). Service перекладывает JSON в XML и отправляет в Echo service (по HTTP), затем Service генерирует UUID, случайное число и сохраняет в Redis. В ответе клиенту добавляем UUID, который сгенерировали. JSON схема ответа может модифицироваться без перекомпиляции приложения, поэтому можно вместо Echo service поставить TranzAxis и подправить схему, например, чтобы положить в ответ те поля, которые отправляет TX в ответе. Схемы хранятся в /resources/schemas.
+Клиент отправляет JSON (любой). Service перекладывает JSON в XML и отправляет в Echo service (по HTTP), получает ответ в также в XML и перекладывает обратно в JSON, затем Service генерирует UUID, случайное число и сохраняет в Redis. В ответе клиенту добавляем UUID, который сгенерировали. JSON схема ответа может модифицироваться без перекомпиляции приложения, поэтому можно вместо Echo service поставить TranzAxis и подправить схему, например, чтобы положить в ответ те поля, которые отправляет TX в ответе. На данный момент Echo отправляет свои поля (они также определены в JSON схеме чтобы переложить эти поля в ответ на запрос). Схемы хранятся в /resources/schemas.
 ### GET /process/{UUID}
 Клиент отправляет запрос с UUID, который он получил при запросе POST /process. Service делает запрос к Redis, чтобы получить разметку с числом, которое мы сгенерировали ранее. 
 # Javaagent
@@ -21,11 +21,20 @@ Echo service отвечает сервису тем же XML что отправ
 ## Пример команды для запуска приложения с агентом
 java -javaagent:{Путь до jar агента}\timing-agent-1.0-SNAPSHOT.jar=app.project_profile,app.project_profile.api. -jar {Путь до jar основного приложения}\service-0.0.1-SNAPSHOT.jar
 # Echo service
-В директории nginx есть Dockerfile, echo.js, nginx.conf для запуска сервиса
+В директории `nginx` находятся файлы конфигурации Echo service:
+- Dockerfile - образ NGINX с необходимой конфигурацией
+- echo.js - файл который определяет как мы будем отвечать на запросы.
+- nginx.conf - конфигурация Nginx.
+Dockerfile, echo.js, nginx.conf для запуска сервиса
 # Prometheus
-В директории config есть prometheus.yml. В нём есть scrape-configs для запуска prometheus в Docker и в k8s.
+В директории `config` находится файл `prometheus.yml`, содержащий конфигурацию Prometheus.  
+В файле определены `scrape_configs` для сбора метрик как при запуске в Docker, так и в Kubernetes.
 # Grafana
-В директории config/grafana есть Dockerfile, dashboards (дашборды, которые подтягиваются сразу при запуске Grafana), datasources (хранилища которые подтягиваются при запуске Grafana)
+В директории `config/grafana` находятся файлы конфигурации Grafana:
+- `Dockerfile` — образ Grafana с необходимой конфигурацией.
+- `dashboards` — автоматически импортируемые дашборды при запуске Grafana.
+- `datasources` — автоматически настраиваемые источники данных (Prometheus) при запуске Grafana.
+В Grafana по умолчанию при запуске добавиться 3 дашборда и prometheus.
 # Filebeat
 В директории filebeat есть yml конфиг для запуска filebeat
 # Logstash
