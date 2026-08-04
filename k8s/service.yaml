@@ -1,16 +1,28 @@
 apiVersion: v1
 kind: Service
+
 metadata:
   name: profile-service
+
 spec:
+  # Service направляет трафик на поды с данной меткой
   selector:
     app: profile-service
 
   ports:
     - name: http
+
+      # Порт Service
       port: 8080
+
+      # Порт приложения внутри контейнера
       targetPort: 8080
 
+    # Порт Java Agent
     - name: agent
+
+      # Порт Service
       port: 9911
+
+      # Порт контейнера, на котором Java Agent публикует метрики
       targetPort: 9911

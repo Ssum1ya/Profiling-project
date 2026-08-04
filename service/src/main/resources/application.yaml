@@ -2,12 +2,14 @@ spring:
   application:
     name: service
 
+ # настройки для Redis
   data:
     redis:
       host: redis
       port: 6379
       password: semechko
 
+# настройки Actuator
 management:
   metrics:
     distribution:
@@ -19,11 +21,14 @@ management:
       exposure:
         include: prometheus
 
+# Logging pattern
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] [uri=%X{uri}] - %msg%n"
 
-mockExternalSystemUrl: http://echo-service:80
+# адрес echo service для k8s и docker
+#mockExternalSystemUrl: http://echo-service:80
+mockExternalSystemUrl: http://mock-external-system:80
 
 server:
   port: 8080

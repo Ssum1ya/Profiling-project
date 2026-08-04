@@ -5,9 +5,12 @@ metadata:
   name: redis
 
 spec:
+  # Service направляет трафик на поды с данной меткой
   selector:
     app: redis
 
   ports:
+      # Порт, по которому Service доступен внутри Kubernetes
     - port: 6379
+      # Порт контейнера, на который проксируются запросы
       targetPort: 6379

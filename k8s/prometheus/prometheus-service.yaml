@@ -4,9 +4,12 @@ metadata:
   name: prometheus
 
 spec:
+  # Service направляет трафик на поды с данной меткой
   selector:
     app: prometheus
 
   ports:
+      # Порт, по которому Service доступен внутри Kubernetes
     - port: 9090
+      # Порт контейнера, на который проксируются запросы
       targetPort: 9090

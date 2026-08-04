@@ -7,10 +7,12 @@ metadata:
 spec:
   replicas: 1
 
+  # Deployment управляет подами с этой меткой
   selector:
     matchLabels:
       app: echo-service
 
+  # Шаблон создаваемых подов
   template:
     metadata:
       labels:
@@ -21,8 +23,10 @@ spec:
         - name: echo-service
           image: project_profile-mock-external-system:latest
 
+          # Использовать локальный образ (minikube)
           imagePullPolicy: Never
 
+          # ограничения по ресурсам
           resources:
             requests:
               memory: "32Mi"
@@ -32,5 +36,6 @@ spec:
               memory: "128Mi"
               cpu: "200m"
 
+          # Порт, который прослушивает приложение внутри контейнера
           ports:
             - containerPort: 80

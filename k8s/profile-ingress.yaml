@@ -1,19 +1,26 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
+
 metadata:
   name: profile-ingress
 
 spec:
   rules:
+    # Домен по которому будет доступно приложение
     - host: profile.local
 
       http:
         paths:
+          # Все запросы, начинающиеся с / будут обработаны данным правилом
           - path: /
+
+            # Правило будет использовано ко всем вложенным путям
             pathType: Prefix
 
+            # Перенаправление запросов на Service
             backend:
               service:
                 name: profile-service
+
                 port:
                   number: 8080

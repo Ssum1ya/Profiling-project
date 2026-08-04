@@ -1,14 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
   name: profile-service
+
 spec:
   replicas: 2
 
+  # Deployment управляет подами с данной меткой
   selector:
     matchLabels:
       app: profile-service
 
+  # Шаблон создаваемых Pod'ов
   template:
     metadata:
       labels:
@@ -18,8 +22,11 @@ spec:
       containers:
         - name: profile-service
           image: test3:latest
+
+          # Использовать локальный образ (minikube)
           imagePullPolicy: Never
 
+          # ограничения по ресурсам
           resources:
             requests:
               memory: "512Mi"
@@ -30,13 +37,18 @@ spec:
               cpu: "1000m"
 
           ports:
+            # Порт Spring Boot приложения
             - name: app
               containerPort: 8080
 
+            # Порт Java Agent, на котором публикуются метрики в формате Prometheus
             - name: agent
               containerPort: 9911
 
+          # Переменные окружения контейнера
           env:
+            # Имя текущего пода.
+            # Используется приложением, чтобы выводить POD_NAME + uri
             - name: POD_NAME
               valueFrom:
                 fieldRef:

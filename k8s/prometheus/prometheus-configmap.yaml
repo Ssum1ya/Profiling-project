@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: prometheus-config
 
+# прописываем prometheus.yml
 data:
   prometheus.yml: |
     global:

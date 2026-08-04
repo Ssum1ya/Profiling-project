@@ -2,31 +2,35 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./service/Dockerfile
     ports:
       - "8080:8080"
       - "9911:9911"
     volumes:
-      - app-logs:/var/log/app
-      - ./service/src/main/resources/schemas:/app/schemas
+      - app-logs:/var/log/app # сюда Logback пишет JSON-логи; читает Filebeat через тот же volume
+      - ./service/src/main/resources/schemas:/app/schemas # JSON-схемы, монтируются с хоста — можно менять без пересборки образа
     environment:
       - SCANNING_PACKAGES=app.project_profile,app.project_profile.api.,app.project_profile.application.
       - PATHTOJSON=/app/schemas/
     depends_on:
       - logstash
+    networks:
+      - test-net
 
+  # Читает JSON-логи из shared volume (app-logs) и пересылает в Logstash
+  # по Beats-протоколу. Не общается с app по сети — только через файл.
   filebeat:
     build:
       context: .
       dockerfile: ./filebeat/Dockerfile.filebeat
     user: root
     volumes:
-      - app-logs:/var/log/app:ro
+      - app-logs:/var/log/app:ro # read-only — filebeat только читает
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - filebeat-data:/usr/share/filebeat/data
     depends_on:
       - logstash
-    command: [ "--strict.perms=false" ]
+    command: [ "--strict.perms=false" ] # обход строгой проверки прав на filebeat.yml
     networks:
       - test-net
 
@@ -34,8 +38,8 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.3
     container_name: elasticsearch
     environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
+      - discovery.type=single-node # один узел (нет реплик)
+      - xpack.security.enabled=false # для простоты локальной разработки аутентификация отключена
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
     ports:
       - "9200:9200"
@@ -54,7 +58,7 @@ services:
     environment:
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
     volumes:
-      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logstash/pipeline:/usr/share/logstash/pipeline # наш pipeline/logstash.conf
     command:
     networks:
       - test-net
@@ -73,7 +77,6 @@ services:
 
   redis:
     image: redis:7-alpine
-    restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
@@ -84,6 +87,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+    networks:
+      - test-net
 
   grafana:
     build: './config/grafana'
@@ -95,9 +100,7 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
     networks:
-      monitoring:
-        aliases:
-          - grafana
+      test-net:
 
   prometheus:
     image: prom/prometheus
@@ -106,18 +109,15 @@ services:
     volumes:
       - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./prometheus:/prometheus
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     networks:
-      monitoring:
-        aliases:
-          - prometheus
+      test-net:
 
   mock-external-system:
     build: ./nginx
     ports:
       - "8081:80"
-    restart: unless-stopped
+    networks:
+      - test-net
 
 volumes:
   app-logs:
@@ -126,6 +126,5 @@ volumes:
   elasticsearch-data:
 
 networks:
-  monitoring:
   test-net:
     driver: bridge

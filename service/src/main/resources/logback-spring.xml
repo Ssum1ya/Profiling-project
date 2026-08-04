@@ -9,30 +9,32 @@
         </encoder>
     </appender>
 
-<!--    <appender name="FILE_JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-<!--        <file>/var/log/app/app.json.log</file>-->
+<!--  для filebeat  -->
+    <appender name="FILE_JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/var/log/app/app.json.log</file>
 
-<!--        <encoder class="net.logstash.logback.encoder.LogstashEncoder">-->
-<!--            <fieldNames>-->
-<!--                <version>[ignore]</version>-->
-<!--                <levelValue>[ignore]</levelValue>-->
-<!--                <thread>[ignore]</thread>-->
-<!--            </fieldNames>-->
-<!--            <includeMdcKeyName>uri</includeMdcKeyName>-->
-<!--            <includeMdcKeyName>traceId</includeMdcKeyName>-->
-<!--            <timestampPattern>yyyy-MM-dd HH:mm:ss</timestampPattern>-->
-<!--        </encoder>-->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <fieldNames>
+                <version>[ignore]</version>
+                <levelValue>[ignore]</levelValue>
+                <thread>[ignore]</thread>
+            </fieldNames>
+            <includeMdcKeyName>uri</includeMdcKeyName>
+            <includeMdcKeyName>traceId</includeMdcKeyName>
+            <timestampPattern>yyyy-MM-dd HH:mm:ss</timestampPattern>
+        </encoder>
 
-<!--        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
-<!--            <fileNamePattern>/var/log/app/app.json.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>-->
-<!--            <maxFileSize>100MB</maxFileSize>-->
-<!--            <maxHistory>7</maxHistory>-->
-<!--            <totalSizeCap>1GB</totalSizeCap>-->
-<!--        </rollingPolicy>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>/var/log/app/app.json.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
 
-<!--        <immediateFlush>false</immediateFlush>-->
-<!--    </appender>-->
+        <immediateFlush>false</immediateFlush>
+    </appender>
 
+<!--  для отправки логов напрямую через TCP  -->
 <!--    <appender name="LOGSTASH_TCP" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
 <!--        <destination>logstash:5044</destination>-->
 
@@ -59,7 +61,7 @@
     <root level="INFO">
         <appender-ref ref="CONSOLE_PLAIN"/>
 <!--        <appender-ref ref="LOGSTASH_TCP"/>-->
-<!--        <appender-ref ref="FILE_JSON"/>-->
+        <appender-ref ref="FILE_JSON"/>
     </root>
 
     <logger name="org.springframework.web" level="INFO"/>

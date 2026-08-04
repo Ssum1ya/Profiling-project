@@ -7,10 +7,12 @@ metadata:
 spec:
   replicas: 1
 
+  # Deployment управляет подами с данной меткой
   selector:
     matchLabels:
       app: redis
 
+  # Шаблон создаваемых Pod'ов
   template:
     metadata:
       labels:
@@ -18,18 +20,19 @@ spec:
 
     spec:
       containers:
-
         - name: redis
+
           image: redis:7-alpine
 
+          # ограничения по ресурсам
           resources:
             requests:
               memory: "64Mi"
               cpu: "50m"
-
             limits:
               memory: "256Mi"
               cpu: "200m"
 
+          # Порт, который прослушивает приложение внутри контейнера
           ports:
             - containerPort: 6379

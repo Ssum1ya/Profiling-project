@@ -1,20 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
   name: prometheus
+
 spec:
   replicas: 1
 
+  # Deployment управляет подами с этой меткой
   selector:
     matchLabels:
       app: prometheus
 
+  # Шаблон создаваемых подов
   template:
     metadata:
       labels:
         app: prometheus
 
     spec:
+      # Подключение конфигурации prometheus
       volumes:
         - name: prometheus-config
           configMap:
@@ -24,6 +29,7 @@ spec:
         - name: prometheus
           image: prom/prometheus:latest
 
+          # ограничения по ресурсам
           resources:
             requests:
               memory: "512Mi"
@@ -33,13 +39,20 @@ spec:
               memory: "1Gi"
               cpu: "1"
 
+          # Аргументы запуска prometheus
           args:
+            # Путь до файла конфигурации
             - "--config.file=/etc/prometheus/prometheus.yml"
 
+          # Порт, который прослушивает приложение внутри контейнера
           ports:
             - containerPort: 9090
 
+
+          # Монтирование конфигурации в контейнер
           volumeMounts:
             - name: prometheus-config
+              # Путь, по которому файл будет доступен внутри контейнера
               mountPath: /etc/prometheus/prometheus.yml
+              # Монтируем только файл prometheus.yml
               subPath: prometheus.yml

@@ -1,30 +1,45 @@
 apiVersion: apps/v1
+
 kind: Deployment
+
 metadata:
   name: grafana
   labels:
     app: grafana
+
 spec:
   replicas: 1
+
+  # Deployment управляет подами с этой меткой
   selector:
     matchLabels:
       app: grafana
+
+  # Шаблон создаваемых подов
   template:
     metadata:
       labels:
         app: grafana
+
     spec:
       containers:
         - name: grafana
           image: grafana-custom:latest
+
+          # Использовать локальный образ (minikube)
           imagePullPolicy: Never
+
           ports:
             - containerPort: 3000
+
+          # Переменные окружения контейнера
           env:
             - name: GF_SECURITY_ADMIN_USER
               value: "admin"
             - name: GF_SECURITY_ADMIN_PASSWORD
               value: "admin"
+
+          # ограничения по ресурсам
           resources:
             requests:
               memory: "256Mi"
@@ -32,15 +47,3 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "500m"
-#          readinessProbe:
-#            httpGet:
-#              path: /api/health
-#              port: 3000
-#            initialDelaySeconds: 10
-#            periodSeconds: 5
-#          livenessProbe:
-#            httpGet:
-#              path: /api/health
-#              port: 3000
-#            initialDelaySeconds: 30
-#            periodSeconds: 15
