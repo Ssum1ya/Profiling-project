@@ -1,5 +1,6 @@
 rootProject.name = "project_profile"
 
 include(
-    "service"
+    "service",
+    "timing-agent"
 )
